@@ -1,2 +1,0 @@
-# ashad-theme
-Wordpress Theme
