@@ -1,0 +1,19 @@
+.wp-block-tag-cloud {
+    a {
+        height: 1.875rem;
+        line-height: 1.625rem;
+        color: #141414;
+        padding: 0 .625rem;
+        border: 1px solid #141414;
+        border-radius: 15px;
+        display: inline-block;
+        margin: 0 .625rem .625rem 0;
+        z-index: 50;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #fff;
+        background: #141414;
+        border-color: #141414
+    }
+}

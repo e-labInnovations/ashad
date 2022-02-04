@@ -1,0 +1,147 @@
+.comments {
+    font-family: "Titillium Web", "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.comment-list {
+    list-style: none;
+    margin-bottom: 40px !important;
+    margin-left: 0px !important;
+    padding-left: 0;
+}
+
+.comment-author.vcard img {
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.commentmetadata {
+    font-weight: 300;
+    font-style: normal;
+    font-size: .8125rem;
+    letter-spacing: 0;
+    color: #a6a6a6;
+}
+
+.comment-body {
+    margin: 0.5rem 0rem 0.5rem;
+    padding: 0.5rem;
+}
+
+
+/* .odd .comment-body {
+    background-color: beige;
+    border-radius: 0.5rem;
+}
+
+.even .comment-body {
+    background-color: rgb(185, 216, 236);
+    border-radius: 0.5rem;
+} */
+
+.vcard {
+    background-color: #282a36;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.vcard .says {
+    display: none;
+}
+
+.comment-reply-link {
+    font-size: .8125rem;
+    font-weight: bold;
+    text-decoration: none;
+    background-color: #ff0a16;
+    color: #fff;
+    padding: 0.3125rem 0.625rem;
+    border-radius: 0.3125rem;
+    margin: 0.3125rem 0.9375rem 0.3125rem 0.3125rem;
+}
+
+.comment-list li.comment {
+    list-style: none;
+}
+
+.comment-form input,
+.comment-form textarea {
+    box-sizing: border-box;
+    outline: none;
+    display: block;
+    color: #333333;
+    width: 100%;
+    padding: 7px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-size: 1.125rem;
+}
+
+#respond {
+    background: #eee;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+    border-radius: 1%;
+}
+
+
+/* Highlight active form field */
+
+#respond input[type=text],
+textarea {
+    transition: all 0.30s ease-in-out;
+    outline: none;
+    padding: 3px 0px 3px 3px;
+    margin: 5px 1px 3px 0px;
+    border: 1px solid #DDDDDD;
+}
+
+#respond input[type=text]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+textarea:focus {
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    margin: 5px 1px 3px 0px;
+    border: 2px solid rgba(81, 203, 238, 1);
+}
+
+#author,
+#email {
+    font-family: "Open Sans", "Droid Sans", Arial;
+    font-style: italic;
+    color: #1d1d1d;
+    letter-spacing: .1em;
+}
+
+#url {
+    color: #1d1d1d;
+    font-family: "Luicida Console", "Courier New", "Courier", monospace;
+}
+
+#submit {
+    display: block;
+    padding: .5rem 1.5rem .5rem 1.5rem;
+    color: #ffffff;
+    background: $themeColor;
+    font-size: 1.125rem;
+    width: auto;
+    border: 1px solid #700005;
+    border-width: 1px 1px 3px;
+    border-radius: 0.5rem;
+    /* margin-top: 3.125rem; */
+    margin-bottom: .625rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    outline: none;
+}
+
+#submit:hover {
+    background: #a30008
+}
+
+#reply-title {
+    padding-top: 1rem;
+}
