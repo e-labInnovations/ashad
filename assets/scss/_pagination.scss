@@ -145,10 +145,15 @@ a.page-numbers:hover {
     background: #f9f9f9;
 }
 
-.pagination-home a {
-    text-decoration: none;
-}
-
-.pagination-home a span:hover {
-    color: #ff0a16 !important;
+.pagination-home {
+    a {
+        text-decoration: none;
+        span:hover {
+            color: #ff0a16 !important;
+        }
+    }
+    .buttons {
+        margin-top: 0rem !important;
+        margin-bottom: rem(50px);
+    }
 }

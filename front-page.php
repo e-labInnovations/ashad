@@ -70,6 +70,77 @@
             </div>
         </section>
 
+        <!-- Code Snippets -->
+        <sction>
+            <div class="code-snippet-cards">
+                <?php
+                    $homepageCodeSnippets = new WP_Query(array(
+                        'post_type' => 'code_snippets',
+                        'post_per_page' => 8
+                    ));
+
+                    while ($homepageCodeSnippets->have_posts()) {
+                        $homepageCodeSnippets->the_post();
+                        $code_languages = get_the_terms($post->ID, 'code_languages');
+        
+                        if ($code_languages) {
+                            $language_id = $code_languages[0]->term_id;
+                            $language_image_id = get_term_meta( $language_id, 'code_languages-image-id', true );
+                            $language_image_url = wp_get_attachment_image_url( $language_image_id, 'language-thumb' );
+                            if ($language_image_url == '') {
+                                $language_image_url = get_default_ashad_language_thumbnail();
+                            }
+                        } else {
+                            $language_image_url = get_default_ashad_language_thumbnail();
+                        } ?>
+                        
+                        <div class="code-snippet-card">
+                            <a class="post-link" href="<?php the_permalink(); ?>">
+                                <img class="code-snippet-card-img" src="<?php echo $language_image_url; ?>">
+                            </a>
+                            <div class="code-snippet-card-info-wrapper">
+                                <a class="post-link" href="<?php the_permalink(); ?>">
+                                    <h3 class="code-snippet-card-description"><?php the_title(); ?></h3>
+                                    <p class="code-snippet-card-text">
+                                        <?php if (has_excerpt()) {
+                                            echo get_the_excerpt();
+                                        } else {
+                                            echo wp_trim_words(get_the_content(), 10);
+                                        } ?>
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+
+                    <?php 
+                    }
+
+                    wp_reset_postdata();
+                ?>
+
+            </div>
+        
+            <div class="pagination pagination-home">
+                <div class="buttons">
+                    <a href="<?php echo get_post_type_archive_link('code_snippets') ?>" role="button" class="button">
+                        <svg><use xlink:href="#icon-read"></use></svg>
+                        <span>View All Code Snippets</span>
+                    </a>
+                </div>
+            </div>
+        </sction>
+
+        <!-- Front Page Content -->
+        <section class="content">
+            <div class="post">
+                
+                <article class="home-content fullwidth">
+                    <?php the_content() ?>
+                </article>
+
+            </div>
+        </section>
+
     </main>
 
 </section>
