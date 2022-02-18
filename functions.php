@@ -143,6 +143,11 @@ if (!function_exists('get_default_ashad_thumbnail')) {
         echo get_template_directory_uri() . '/assets/img/default_thumbnail.jpg';
     }
 }
+if (!function_exists('get_default_ashad_thumbnail_url')) {
+    function get_default_ashad_thumbnail_url() {
+        get_template_directory_uri() . '/assets/img/default_thumbnail.jpg';
+    }
+}
 
 if (!function_exists('get_default_ashad_language_thumbnail')) {
     function get_default_ashad_language_thumbnail() {
