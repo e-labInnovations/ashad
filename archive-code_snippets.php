@@ -27,8 +27,9 @@
                                 <img class="code-snippet-card-img" src="<?php echo $language_image_url; ?>">
                             </a>
                             <div class="code-snippet-card-info-wrapper">
-                                <a class="post-link" href="<?php the_permalink(); ?>">
-                                    <h3 class="code-snippet-card-description"><?php the_title(); ?></h3>
+                                <a href="<?php the_permalink(); ?>">
+                                    <h3><?php the_title(); ?></h3>
+                                    <time datetime="<?php echo get_the_date(); ?>" class="date">  <?php echo get_the_date(); ?>  </time>
                                     <p class="code-snippet-card-text">
                                         <?php if (has_excerpt()) {
                                             echo get_the_excerpt();

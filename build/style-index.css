@@ -1509,7 +1509,7 @@ body.light:not(.main-page) .bar-header .version {
 }
 .code-snippet-cards .code-snippet-card {
   background: rgba(0, 0, 0, 0.329);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.25);
   padding: 10px;
   display: -ms-grid;
   display: grid;
@@ -1530,6 +1530,7 @@ body.light:not(.main-page) .bar-header .version {
   text-decoration: none;
   display: block;
   color: #ffffff;
+  margin: auto;
 }
 .code-snippet-cards .code-snippet-card-info-wrapper {
   display: -ms-grid;
@@ -1539,19 +1540,21 @@ body.light:not(.main-page) .bar-header .version {
   text-decoration: none;
   display: block;
 }
-.code-snippet-cards .code-snippet-card-info-wrapper > h2 {
-  margin: -3px 0 0 0;
-  font-size: 1rem;
+.code-snippet-cards .code-snippet-card-info-wrapper a time {
+  font-weight: 300;
+  font-size: 0.875rem;
+  color: #737373;
+  pointer-events: none;
 }
-.code-snippet-cards .code-snippet-card-info-wrapper > h3 {
-  margin: 5px 0 0 0;
-  font-size: 0.9rem;
+.code-snippet-cards .code-snippet-card-info-wrapper a h3 {
+  margin: 0;
 }
-.code-snippet-cards .code-snippet-card p {
-  color: var(--text);
+.code-snippet-cards .code-snippet-card-info-wrapper a p {
+  color: #bfbfbf;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
   letter-spacing: 0.2px;
   margin-top: 0;
-  font-size: 0.8rem;
 }
 .code-snippet-cards .code-snippet-card-img {
   width: 100%;

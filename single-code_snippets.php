@@ -2,6 +2,7 @@
 $code_languages = get_the_terms($post->ID, 'code_languages');
 
 if ($code_languages) {
+    $language_name = $code_languages[0]->name;
     $language_id = $code_languages[0]->term_id;
     $language_image_id = get_term_meta( $language_id, 'code_languages-image-id', true );
     $language_image_url = wp_get_attachment_image_url( $language_image_id, 'language-thumb' );
@@ -9,6 +10,7 @@ if ($code_languages) {
         $language_image_url = get_default_ashad_language_thumbnail();
     }
 } else {
+    $language_name = "Unspecified";
     $language_image_url = get_default_ashad_language_thumbnail();
 } ?>
 <section class="post <?php echo get_theme_mod('ashad_sidebar_display', 1)? 'two-columns' : 'one-column' ?>">
@@ -16,10 +18,10 @@ if ($code_languages) {
         <p class="post-info">
             <svg class="icon-calendar" id="date"><use xlink:href="#icon-calendar"></use></svg>
             <time class="date" datetime="<?php echo get_the_date('F j, Y'); ?>">
-                <?php the_date(); ?>
+                <?php echo get_the_date(); ?>
             </time>
-            <svg id="clock" class="icon-clock"><use xlink:href="#icon-clock"></use></svg>
-            <span><?php get_reading_time(get_the_ID()); ?> min to read</span>
+            <svg id="clock" class="icon-clock"><use xlink:href="#icon-code"></use></svg>
+            <span><?php echo $language_name; ?></span>
         </p>
         <h1 class="post-title"><?php the_title(); ?></h1>
         <?php if(has_post_thumbnail()) { ?>
@@ -59,18 +61,18 @@ if ($code_languages) {
 
 <!-- Add time bar only for pages without pagination -->
 <?php if(get_theme_mod('ashad_display_timebar', 1)) {
-    get_template_part('/template-parts/parts/time-bar');
-    get_template_part('/template-parts/parts/recommendation');
+    // get_template_part('/template-parts/parts/time-bar');
+    // get_template_part('/template-parts/parts/recommendation');
 }?>
 
 <!-- Show modal before user leaves the page -->
 <?php if(get_theme_mod('ashad_display_finish_modal', 1)) {
-    get_template_part('/template-parts/parts/modal', null, array(
-        'title' => 'Don\'t go yet!',
-        'subtitle' => 'You may also like...',
-        'closed' => true,
-        'showOnExit' => true
-    ));
+    // get_template_part('/template-parts/parts/modal', null, array(
+    //     'title' => 'Don\'t go yet!',
+    //     'subtitle' => 'You may also like...',
+    //     'closed' => true,
+    //     'showOnExit' => true
+    // ));
 } ?>
 
 <!-- Share -->

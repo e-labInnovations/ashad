@@ -468,7 +468,7 @@
     margin: 10px;
     .code-snippet-card {
         background: rgba(0, 0, 0, 0.329);
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.25);
         padding: 10px;
         display: grid;
         grid-template-columns: 100px 1fr;
@@ -487,6 +487,7 @@
             text-decoration: none;
             display: block;
             color: $accentDark;
+            margin: auto;
         }
     }
     .code-snippet-card-info-wrapper {
@@ -495,21 +496,23 @@
         a {
             text-decoration: none;
             display: block;
+            time {
+                font-weight: 300;
+                font-size: rem(14px);
+                color: darken($lightGray, 50%);
+                pointer-events: none;
+            }
+            h3 {
+                margin: 0;
+            }
+            p {
+                color: darken($lightGray, 20%);
+                font-size: rem(14px);
+                line-height: rem(18px);
+                letter-spacing: 0.2px;
+                margin-top: 0;
+            }
         }
-    }
-    .code-snippet-card-info-wrapper>h2 {
-        margin: -3px 0 0 0;
-        font-size: 1rem;
-    }
-    .code-snippet-card-info-wrapper>h3 {
-        margin: 5px 0 0 0;
-        font-size: 0.9rem;
-    }
-    .code-snippet-card p {
-        color: var(--text);
-        letter-spacing: 0.2px;
-        margin-top: 0;
-        font-size: 0.8rem;
     }
     .code-snippet-card-img {
         width: 100%;
