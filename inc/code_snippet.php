@@ -13,7 +13,7 @@ function code_snippets_post_type() {
         'hierarchical' => false, //if true, same as pages, else same as posts 
         'public' => true,
         'has_archive' => true,
-        'support' => array('title', 'editor'),
+        'support' => array('title', 'editor', 'comments'),
         'menu_icon' => 'dashicons-editor-code',
         'show_in_rest' => true,
         // 'rewrite' => array('slug' => 'codes-snippets')
@@ -35,6 +35,11 @@ function language_taxonomy() {
         'support' => array('title', 'editor'),
         'menu_icon' => 'dashicons-editor-code',
         'show_in_rest' => true,
+        'default_term' => array(
+            'name' => 'Unspecified',
+            'slug' => 'unspecified',
+            'description' => ''
+        )
     ));
 }
 add_action('init', 'language_taxonomy');

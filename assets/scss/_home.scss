@@ -25,7 +25,7 @@
     font-size: rem(32px);
     margin: 0 0 rem(40px);
     padding: 0 rem(23px);
-    text-transform: lowercase;
+    // text-transform: lowercase;
     color: #fff;
 }
 
@@ -199,6 +199,12 @@
     color: #fff;
 }
 
+.icon-title {
+    width: 2rem;
+    height: 2em;
+    vertical-align: middle;
+}
+
 .home-content {
     // overflow-x: auto;
     padding: rem(40px) 0;
@@ -233,6 +239,7 @@
     iframe {
         @include center(rem(800px));
         @include mainFont(400);
+        color: #fff;
         font-size: rem(17px);
         line-height: rem(30px);
         letter-spacing: 0.025rem;
@@ -493,6 +500,7 @@
     .code-snippet-card-info-wrapper {
         // height: 150px;
         display: grid;
+        justify-content: start;
         a {
             text-decoration: none;
             display: block;

@@ -923,7 +923,6 @@ body.light:not(.main-page) .bar-header .version {
   font-size: 2rem;
   margin: 0 0 2.5rem;
   padding: 0 1.4375rem;
-  text-transform: lowercase;
   color: #fff;
 }
 
@@ -1112,6 +1111,12 @@ body.light:not(.main-page) .bar-header .version {
   color: #fff;
 }
 
+.icon-title {
+  width: 2rem;
+  height: 2em;
+  vertical-align: middle;
+}
+
 .home-content {
   padding: 2.5rem 0;
 }
@@ -1157,6 +1162,7 @@ body.light:not(.main-page) .bar-header .version {
   font-family: "Titillium Web", "Helvetica Neue", Helvetica, sans-serif;
   font-weight: 400;
   font-style: normal;
+  color: #fff;
   font-size: 1.0625rem;
   line-height: 1.875rem;
   letter-spacing: 0.025rem;
@@ -1535,6 +1541,7 @@ body.light:not(.main-page) .bar-header .version {
 .code-snippet-cards .code-snippet-card-info-wrapper {
   display: -ms-grid;
   display: grid;
+  justify-content: start;
 }
 .code-snippet-cards .code-snippet-card-info-wrapper a {
   text-decoration: none;

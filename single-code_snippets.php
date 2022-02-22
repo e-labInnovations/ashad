@@ -3,6 +3,7 @@ $code_languages = get_the_terms($post->ID, 'code_languages');
 
 if ($code_languages) {
     $language_name = $code_languages[0]->name;
+    $language_url = get_term_link($code_languages[0], 'code_languages');
     $language_id = $code_languages[0]->term_id;
     $language_image_id = get_term_meta( $language_id, 'code_languages-image-id', true );
     $language_image_url = wp_get_attachment_image_url( $language_image_id, 'language-thumb' );
@@ -20,8 +21,10 @@ if ($code_languages) {
             <time class="date" datetime="<?php echo get_the_date('F j, Y'); ?>">
                 <?php echo get_the_date(); ?>
             </time>
-            <svg id="clock" class="icon-clock"><use xlink:href="#icon-code"></use></svg>
-            <span><?php echo $language_name; ?></span>
+            <a href="<?php echo $language_url ?>">
+                <svg id="clock" class="icon-clock"><use xlink:href="#icon-code"></use></svg>
+                <span><?php echo $language_name; ?></span>
+            </a>
         </p>
         <h1 class="post-title"><?php the_title(); ?></h1>
         <?php if(has_post_thumbnail()) { ?>
