@@ -16,7 +16,7 @@ function code_snippets_post_type() {
         'support' => array('title', 'editor', 'comments'),
         'menu_icon' => 'dashicons-editor-code',
         'show_in_rest' => true,
-        // 'rewrite' => array('slug' => 'codes-snippets')
+        // 'rewrite' => array( 'slug' => 'code_snippets/%code_languages%', 'with_front' => false ),
     ));
 }
 add_action('init', 'code_snippets_post_type');
@@ -39,10 +39,24 @@ function language_taxonomy() {
             'name' => 'Unspecified',
             'slug' => 'unspecified',
             'description' => ''
-        )
+        ),
+        // 'rewrite' => array( 'slug' => 'code_languages', 'with_front' => false ),
     ));
 }
 add_action('init', 'language_taxonomy');
+
+//permalink change to /code_snippets/{language}/{title}
+//https://stackoverflow.com/a/57853332/11409930
+function code_snippets_permalinks( $post_link, $post ){
+    if ( is_object( $post ) && $post->post_type == 'code_snippets' && $post_link != '' ){
+        $terms = wp_get_object_terms( $post->ID, 'code_languages' );
+        if( $terms ){
+            return str_replace( '%code_languages%' , $terms[0]->slug , $post_link );
+        }
+    }
+    return $post_link;
+}
+// add_filter( 'post_type_link', 'code_snippets_permalinks', 1, 2 );
 
 //Code Languages Custom Image Field
 require get_stylesheet_directory() . '/inc/code_languages-image_filed.php';
