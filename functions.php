@@ -66,48 +66,23 @@ function ashad_register_scripts(){
 add_action('wp_enqueue_scripts', 'ashad_register_scripts');
 
 //Widgets
-function ashad_widget_areas() {
-    //Sidebar Widget
-    register_sidebar(
-        array(
-            'before_title' => '<h2>',
-            'after_title' => '</h2>',
-            'before_widget' => '',
-            'after_widget' => '',
-            'name' => 'Sidebar Widgets',
-            'id' => 'sidebar-1',
-            'descriptions' => 'Sidebar Widgets Area'
-        )
-    );
-
-    //Footer Widget
-    register_sidebar(
-        array(
-            'before_title' => '<h2>',
-            'after_title' => '</h2>',
-            'before_widget' => '',
-            'after_widget' => '',
-            'name' => 'Footer Widgets',
-            'id' => 'footer-1',
-            'descriptions' => 'Footer Widgets Area'
-        )
-    );
-}
-
-add_action('widgets_init', 'ashad_widget_areas');
+require_once get_stylesheet_directory() . '/inc/widgets.php';
 
 //Customizer
-require get_stylesheet_directory() . '/inc/ashad-customizer.php';
+require_once get_stylesheet_directory() . '/inc/ashad-customizer.php';
 new Ashad_Customizer();
 
 //Custom Post Type
-require get_stylesheet_directory() . '/inc/code_snippet.php';
+require_once get_stylesheet_directory() . '/inc/code_snippet.php';
 
 //User Custom Fileds
-require get_stylesheet_directory() . '/inc/custom_user_fileds.php';
+require_once get_stylesheet_directory() . '/inc/custom-user-fileds.php';
 
 //Custom API for Search
-require get_theme_file_path('/inc/search-route.php');
+require_once get_stylesheet_directory() . '/inc/search-route.php';
+
+//AJAX Search
+require_once get_stylesheet_directory() . '/inc/ajax-search.php';
 
 //Redirect subscriber account from admin panel to website home
 function ashadRedirectSubscriber() {
@@ -177,39 +152,16 @@ if (!function_exists('get_reading_time')) :
     }
 endif;
 
-// add the ajax fetch js
-add_action( 'wp_footer', 'ajax_fetch' );
-function ajax_fetch() {
-?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<?php
+// Custom feed SVG
+function add_custom_feed() {
+    add_feed( 'svg.svg', 'render_custom_feed' );
 }
-
-// the ajax function
-function data_fetch(){
-    $the_query = new WP_Query( array( 'posts_per_page' => -1, 's' => esc_attr( $_POST['keyword'] ), 'post_type' => 'post' ) );
-    if( $the_query->have_posts() ) :
-        while( $the_query->have_posts() ): $the_query->the_post(); ?>
-            <li>
-                <article>
-                    <a href="<?php echo esc_url( post_permalink() ); ?>">
-                        <span class="entry-category"><?php $category = get_the_category(); echo $category? $category[0]->cat_name : ''; ?></span> 
-                        <?php the_title();?>
-                        <span class="entry-date">
-                            <time datetime="<?php the_date();?>"><?php the_date();?></time>
-                        </span>
-                    </a>
-                </article>
-            </li>
-
-        <?php endwhile;
-        wp_reset_postdata();  
-    endif;
-
-    die();
+add_action( 'init', 'add_custom_feed' );
+ 
+function render_custom_feed() {
+    header( 'Content-Type: application/svg+xml' );
+    echo '<svg xmlns="http://www.w3.org/2000/svg" height="90" width="200"><text x="10" y="20" style="fill:red;">Hello<tspan x="10" y="45">{{name}}</tspan></text></svg>';
 }
-add_action('wp_ajax_data_fetch' , 'data_fetch');
-add_action('wp_ajax_nopriv_data_fetch','data_fetch');
 
 
 ?>
