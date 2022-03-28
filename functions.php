@@ -1,7 +1,7 @@
 <?php
 
 $version = wp_get_theme()->get('Version');
-// $version = rand(111,9999); //For development (Reload css)
+$version = rand(111,9999); //For development (Reload css)
 
 //Theme support
 function ashad_theme_support() {
@@ -152,16 +152,41 @@ if (!function_exists('get_reading_time')) :
     }
 endif;
 
-// Custom feed SVG
-function add_custom_feed() {
-    add_feed( 'svg.svg', 'render_custom_feed' );
-}
-add_action( 'init', 'add_custom_feed' );
+//Dynamic SVG Image
+add_action( 'init',  function() {
+    add_rewrite_rule( 'customsvg/([a-z0-9-]+)[/]?$', 'index.php?customsvg=$matches[1]', 'top' );
+} );
+
+add_filter( 'query_vars', function( $query_vars ) {
+    $query_vars[] = 'customsvg';
+    return $query_vars;
+} );
+
+add_action( 'template_include', function( $template ) {
+    if ( get_query_var( 'customsvg' ) == false || get_query_var( 'customsvg' ) == '' ) {
+        return $template;
+    }
  
-function render_custom_feed() {
-    header( 'Content-Type: application/svg+xml' );
-    echo '<svg xmlns="http://www.w3.org/2000/svg" height="90" width="200"><text x="10" y="20" style="fill:red;">Hello<tspan x="10" y="45">{{name}}</tspan></text></svg>';
-}
+    return get_template_directory() . '/svg.php';
+} );
+
+//Dynamic png image
+add_action( 'init',  function() {
+    add_rewrite_rule( 'ashad-thumbnail/([a-z0-9-]+)[/]?$', 'index.php?ashad-thumbnail=$matches[1]', 'top' );
+} );
+
+add_filter( 'query_vars', function( $query_vars ) {
+    $query_vars[] = 'ashad-thumbnail';
+    return $query_vars;
+} );
+
+add_action( 'template_include', function( $template ) {
+    if ( get_query_var( 'ashad-thumbnail' ) == false || get_query_var( 'ashad-thumbnail' ) == '' ) {
+        return $template;
+    }
+ 
+    return get_template_directory() . '/ashad-thumbnail.php';
+} );
 
 
 ?>
