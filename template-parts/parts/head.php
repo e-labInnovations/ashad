@@ -15,7 +15,7 @@ if ( is_single() ) {
   if(has_post_thumbnail()) {
     $image = get_the_post_thumbnail_url(get_the_ID(), 'archive-thumb');
   } else {
-    $image = get_default_ashad_thumbnail_url();
+    $image = get_site_url() . '/ashad-thumbnail/' . get_the_ID();
   }
   $url = get_permalink(); 
 }
