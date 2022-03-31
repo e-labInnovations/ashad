@@ -84,6 +84,9 @@ require_once get_stylesheet_directory() . '/inc/search-route.php';
 //AJAX Search
 require_once get_stylesheet_directory() . '/inc/ajax-search.php';
 
+//Dynamic Open Graph Image
+require_once get_stylesheet_directory() . '/inc/opengraph-image.php';
+
 //Redirect subscriber account from admin panel to website home
 function ashadRedirectSubscriber() {
     $currentUser = wp_get_current_user();
@@ -168,24 +171,6 @@ add_action( 'template_include', function( $template ) {
     }
  
     return get_template_directory() . '/svg.php';
-} );
-
-//Dynamic png image
-add_action( 'init',  function() {
-    add_rewrite_rule( 'ashad-thumbnail/([a-z0-9-]+)[/]?$', 'index.php?ashad-thumbnail=$matches[1]', 'top' );
-} );
-
-add_filter( 'query_vars', function( $query_vars ) {
-    $query_vars[] = 'ashad-thumbnail';
-    return $query_vars;
-} );
-
-add_action( 'template_include', function( $template ) {
-    if ( get_query_var( 'ashad-thumbnail' ) == false || get_query_var( 'ashad-thumbnail' ) == '' ) {
-        return $template;
-    }
- 
-    return get_template_directory() . '/ashad-thumbnail.php';
 } );
 
 
