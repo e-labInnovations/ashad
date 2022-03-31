@@ -8,7 +8,7 @@ $image = get_site_icon_url();
 $url = home_url($wp->request);
 $tags;
 
-if ( is_single() ) {
+if (is_singular()) {
   $title = get_the_title();
   $description = has_excerpt()?get_the_excerpt():wp_trim_words(get_the_content(), 10);
   $tags = get_the_tags();
