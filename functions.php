@@ -87,6 +87,9 @@ require_once get_stylesheet_directory() . '/inc/ajax-search.php';
 //Dynamic Open Graph Image
 require_once get_stylesheet_directory() . '/inc/opengraph-image.php';
 
+//Custom Contact Page
+require_once get_stylesheet_directory() . '/inc/contact-page.php';
+
 //Redirect subscriber account from admin panel to website home
 function ashadRedirectSubscriber() {
     $currentUser = wp_get_current_user();
