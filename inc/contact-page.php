@@ -39,17 +39,37 @@ function ashadContactsMenu() {
 }
 
 function contactsHTML() {
-    if ( ! class_exists( 'WP_List_Table' ) ) {
-        require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-    }
-    global $wpdb;
-	$table_name = $wpdb->prefix . 'ashad_contacts';
-    $query = $wpdb->prepare("SELECT * FROM $table_name LIMIT 100");
-    $contacts = $wpdb->get_results($query);
-?>
-<h1>Hello</h1>
-<p><?php var_dump($contacts); ?></p>
-<?php
+    ob_start();
+    include_once get_stylesheet_directory() . '/inc/contacts-table.php';
+    $template = ob_get_contents();
+    ob_end_clean();
+    echo $template;
+
+    // global $wpdb;
+    // $table_name = $wpdb->prefix . 'ashad_contacts';
+    // $query = $wpdb->prepare("SELECT * FROM $table_name ORDER BY time DESC");
+    // $contacts = $wpdb->get_results($query, ARRAY_A);
+
+    // var_dump($contacts);
+    $table = new contacts_List_Table();
+    $table->items = $contacts;
+    $table->prepare_items();
+    ?>
+    <div class="wrap">    
+        <h2>Messages</h2>
+            <div id="nds-wp-list-table-demo">			
+                <div id="nds-post-body">		
+                    <form id="nds-user-list-form" method="get">
+                        <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+                        <?php 
+                            $table->search_box('Find', 'nds-user-find');
+                            $table->display(); 
+                        ?>					
+                    </form>
+                </div>			
+            </div>
+    </div>
+    <?php
 }
 
 
@@ -82,10 +102,10 @@ function onAdminRefresh() {
 
     $wpdb->insert($table_name, array(
         'time' => $now->format('Y-m-d H:i:s'),
-        'name' => 'Ashad',
-        'email' => 'ashad@elabins.com',
+        'name' => 'abcd',
+        'email' => 'abscd@elabins.com',
         'subject' => 'Help',
-        'message' => 'Hi Sir',
+        'message' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis ratione tempora, quod ullam sit et in voluptates. Molestiae, unde facere!',
         'status' => '1'
     ));
 }
