@@ -1,14 +1,5 @@
 <?php
 
-//Contact page template
-// add_filter('template_include', 'loadContactPageTemplate', 99);
-function loadContactPageTemplate($template) {
-    if (is_page('contact')) {
-        return plugin_dir_path(__FILE__) . '../templates/contact-page.php';
-    }
-    return $template;
-}
-
 function ashadSaveContactMessage() {
     $flag=1;
     if($_POST['name']=='') {
@@ -109,13 +100,7 @@ function contactsHTML() {
     $template = ob_get_contents();
     ob_end_clean();
     echo $template;
-
-    // global $wpdb;
-    // $table_name = $wpdb->prefix . 'ashad_contacts';
-    // $query = $wpdb->prepare("SELECT * FROM $table_name ORDER BY time DESC");
-    // $contacts = $wpdb->get_results($query, ARRAY_A);
-
-    // var_dump($contacts);
+    
     $table = new contacts_List_Table();
     $table->items = $contacts;
     $table->prepare_items();

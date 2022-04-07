@@ -152,7 +152,7 @@ class contacts_List_Table extends WP_List_Table {
      * @return HTML
      */
 
-    function name($item) {
+    function first_column_name($item) {
         $actions = array(
             'edit'      => sprintf('<a href="?page=custom_detail_page&user=%s">Edit</a>',$item['id']),
             'trash'    => sprintf('<a href="?page=custom_list_page&action=trash&user=%s">Trash</a>',$item['id']),
