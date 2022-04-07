@@ -1,13 +1,78 @@
 <?php
 
 //Contact page template
-add_filter('template_include', 'loadContactPageTemplate', 99);
+// add_filter('template_include', 'loadContactPageTemplate', 99);
 function loadContactPageTemplate($template) {
     if (is_page('contact')) {
         return plugin_dir_path(__FILE__) . '../templates/contact-page.php';
     }
     return $template;
 }
+
+function ashadSaveContactMessage() {
+    $flag=1;
+    if($_POST['name']=='') {
+        $flag=0;
+        $error = $error . '\n' . "Please Enter Your Name<br>";
+    } else if(!preg_match('/[a-zA-Z_x7f-xff][a-zA-Z0-9_x7f-xff]*/',$_POST['name'])) {
+        $flag=0;
+        $error = $error . '\n' . "Please Enter Valid Name<br>";
+    }
+    if($_POST['email']=='') {
+        $flag=0;
+        $error = $error . '\n' . "Please Enter E-mail<br>";
+    } // else if(validate_email($_POST['email'])) {
+    //     $flag=0;
+    //     $error = $error . '\n' . "Please Enter Valid E-Mail<br>";
+    // }
+    
+    if($_POST['subject']=='') {
+        $flag=0;
+        $error = $error . '\n' . "Please Enter Subject<br>";
+    }
+    
+    if($_POST['message']=='') {
+        $flag=0;
+        $error = $error . '\n' . "Please Enter Message";
+    }
+    
+    if ( empty($_POST) ) {
+        print 'Sorry, your nonce did not verify.';
+        exit;
+    } else if(!wp_verify_nonce($_POST['_wpnonce'], 'ashad_contact_form' )) {
+        print 'Sorry, your nonce did not verify.';
+        exit;
+    } else {
+        if($flag==1) {
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'ashad_contacts';
+
+            $name = sanitize_text_field($_POST['name']);
+            $email = sanitize_email($_POST['email']);
+            $subject = sanitize_text_field($_POST['subject']);
+            $message = sanitize_text_field($_POST['message']);
+
+            $now = new DateTime();
+            $wpdb->insert($table_name, array(
+                'time' => $now->format('Y-m-d H:i:s'),
+                'name' => $name,
+                'email' => $email,
+                'subject' => $subject,
+                'message' => $message,
+                'status' => '1'
+            ));
+            wp_mail(get_option("admin_email"),$name." sent you a message",stripslashes($message),"From: ".$name." <".$email.">rnReply-To:".$email);
+            wp_redirect('/message-send');
+        } else {
+            // wp_redirect('/message-send');
+            print $error;
+        }
+    }
+
+    print_r($_POST);
+}
+add_action('admin_post_nopriv_ashad_contact_form', 'ashadSaveContactMessage');
+add_action('admin_post_ashad_contact_form', 'ashadSaveContactMessage');
 
 //Create DB
 add_action("after_switch_theme", "ashad_create_contact_db");

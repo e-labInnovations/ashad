@@ -47,11 +47,20 @@ class contacts_List_Table extends WP_List_Table {
      * Prepares the list of items for displaying.
      */
     public function prepare_items() {
-        // code to handle bulk actions
+        $columns  = $this->get_columns();
+        $sortable = $this->get_sortable_columns();
+        $hidden   = array();
+        $this->get_bulk_actions();
+        $table_data = $this->fetch_table_data();
+        $total_messages = count( $table_data );
+        // $message = get_current_message_id();
+        // $screen = get_current_screen();
+        // $option = $screen->get_option('per_page', 'option'); 
+        // $perpage = get_user_meta($message, $option, true);
+        $this->_column_headers = array($columns,$hidden,$sortable);
 	    
         //used by WordPress to build and fetch the _column_headers property
         $this->_column_headers = $this->get_column_info();		      
-        $table_data = $this->fetch_table_data();
             
         // code to handle data operations like sorting and filtering
         // check if a search was performed.
@@ -82,18 +91,11 @@ class contacts_List_Table extends WP_List_Table {
         $this->items = array_slice( $table_data, ( ( $table_page - 1 ) * $messages_per_page ), $messages_per_page );
 
         // set the pagination arguments		
-        $total_messages = count( $table_data );
         $this->set_pagination_args( array (
             'total_items' => $total_messages,
             'per_page'    => $messages_per_page,
             'total_pages' => ceil( $total_messages/$messages_per_page )
         ) );
-
-        $columns  = $this->get_columns();
-        $hidden   = array();
-        $sortable = array();
-        $primary  = 'id';
-        $this->_column_headers = array( $columns, $hidden, $sortable, $primary );
     }
 
     /**
@@ -118,15 +120,14 @@ class contacts_List_Table extends WP_List_Table {
         }
     }
 
-    protected function get_sortable_columns() {
-        /*
-         * actual sorting still needs to be done by prepare_items.
-         * specify which columns should have the sort icon.	
-         */
-        $sortable_columns = array (
-                'date' => array( 'date', true ),
-                'name'=>'name'
-            );
+    /**
+    * Decide which columns to activate the sorting functionality on
+    * @return array $sortable, the array of columns that can be sorted by the user
+    */
+    public function get_sortable_columns() {
+        $sortable_columns = array(
+            'date'     => array('time',true),
+            'name' => array('name',true) ); 
         return $sortable_columns;
     }
 
@@ -141,7 +142,23 @@ class contacts_List_Table extends WP_List_Table {
         } ) );
 
         return $filtered_table_data;
+    }
 
+    /**
+     * [OPTIONAL] this is example, how to render column with actions,
+     * when you hover row "Edit | Delete" links showed
+     *
+     * @param $item - row (key, value array)
+     * @return HTML
+     */
+
+    function name($item) {
+        $actions = array(
+            'edit'      => sprintf('<a href="?page=custom_detail_page&user=%s">Edit</a>',$item['id']),
+            'trash'    => sprintf('<a href="?page=custom_list_page&action=trash&user=%s">Trash</a>',$item['id']),
+            );
+        return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions) );
+    
     }
 
     // Returns an associative array containing the bulk action.
@@ -153,73 +170,64 @@ class contacts_List_Table extends WP_List_Table {
         * action and action2 are set based on the triggers above and below the table		 		    
         */
         $actions = array(
-            'bulk-download' => 'Download messages',
-            'bulk-trash' => 'Move to Trash' 
+            'download' => 'Download messages',
+            'trash' => 'Move to Trash' 
         );
         return $actions;
     }
 
-    public function handle_table_actions() {	
-        // check for individual row actions
-        $the_table_action = $this->current_action();
+    public function process_bulk_action() {  
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'ashad_contacts';
 
-        if ( 'view_message' === $the_table_action ) {
-            $nonce = wp_unslash( $_REQUEST['_wpnonce'] );
-            // verify the nonce.
-            if ( ! wp_verify_nonce( $nonce, 'view_message_nonce' ) ) {
-                $this->invalid_nonce_redirect();
-            }
-            else {                    
-                $this->page_view_message( absint( $_REQUEST['message_id']) );
-                $this->graceful_exit();
-            }
+        $nonce = wp_unslash( $_REQUEST['_wpnonce'] );
+        if ( ! wp_verify_nonce( $nonce, 'bulk-messages' ) ) { // verify the nonce.
+            $this->invalid_nonce_redirect();
         }
+        else {
+            if ('trash' === $this->current_action()) {
+                if (isset($_GET['messages'])) {
+                    if (is_array($_GET['messages'])){
+                        foreach ($_GET['messages'] as $id) {
+                            if(!empty($id)) {
+                                $wpdb->query("update $table_name set status='trash' WHERE id IN($id)");
+                            }
+                        }
+                    } else {
+                        if (!empty($_GET['messages'])) {  
+                            $id=$_GET['messages'];
+                            $wpdb->query("update $table_name set status='trash' WHERE id =$id");  
+                        }
+                    }
+                }
+            }
+            
+            $this->graceful_exit();
+        }
+    }
 
-        /*
-         * Note: Table bulk_actions can be identified by checking $_REQUEST['action'] and $_REQUEST['action2']
-         * action - is set if checkbox from top-most select-all is set, otherwise returns -1
-         * action2 - is set if checkbox the bottom-most select-all checkbox is set, otherwise returns -1
-         */    
-        if ( ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'bulk-download' ) || ( isset( $_REQUEST['action2'] ) && $_REQUEST['action2'] === 'bulk-download' ) ) {
+    // public function handle_table_actions() {	
+    //     /*
+    //      * Note: Table bulk_actions can be identified by checking $_REQUEST['action'] and $_REQUEST['action2']
+    //      * action - is set if checkbox from top-most select-all is set, otherwise returns -1
+    //      * action2 - is set if checkbox the bottom-most select-all checkbox is set, otherwise returns -1
+    //      */    
+    //     if ( ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'bulk-download' ) || ( isset( $_REQUEST['action2'] ) && $_REQUEST['action2'] === 'bulk-download' ) ) {
     
-            $nonce = wp_unslash( $_REQUEST['_wpnonce'] );	
-            /*
-             * Note: the nonce field is set by the parent class
-             * wp_nonce_field( 'bulk-' . $this->_args['plural'] );	 
-             */
-            if ( ! wp_verify_nonce( $nonce, 'bulk-messages' ) ) { // verify the nonce.
-                $this->invalid_nonce_redirect();
-            }
-            else {
-                include_once( 'messages-bulk-download.php' );
-                $this->graceful_exit();
-            }
-        }
-    }
-
-    /*
-    * Method for rendering the user_login column.
-    * Adds row action links to the user_login column.
-    * e.g. url/users.php?page=nds-wp-list-table-demo&action=view_usermeta&user=18&_wpnonce=1984253e5e
-    */
-    protected function column_user_login( $item ) {		
-        $admin_page_url =  admin_url( 'users.php' );
-
-        // row action to view usermeta.
-        $query_args_view_usermeta = array(
-            'page'		=>  wp_unslash( $_REQUEST['page'] ),
-            'action'	=> 'view_usermeta',
-            'user_id'	=> absint( $item['ID']),
-            '_wpnonce'	=> wp_create_nonce( 'view_usermeta_nonce' ),
-        );
-        $view_usermeta_link = esc_url( add_query_arg( $query_args_view_usermeta, $admin_page_url ) );		
-        $actions['view_usermeta'] = '<a href="' . $view_usermeta_link . '">' . __( 'View Meta', $this->plugin_text_domain ) . '</a>';		
-
-        // similarly add row actions for add usermeta.
-
-        $row_value = '<strong>' . $item['user_login'] . '</strong>';
-        return $row_value . $this->row_actions( $actions );
-    }
+    //         $nonce = wp_unslash( $_REQUEST['_wpnonce'] );	
+    //         /*
+    //          * Note: the nonce field is set by the parent class
+    //          * wp_nonce_field( 'bulk-' . $this->_args['plural'] );	 
+    //          */
+    //         if ( ! wp_verify_nonce( $nonce, 'bulk-messages' ) ) { // verify the nonce.
+    //             $this->invalid_nonce_redirect();
+    //         }
+    //         else {
+    //             include_once( 'messages-bulk-download.php' );
+    //             $this->graceful_exit();
+    //         }
+    //     }
+    // }
 
     /**
      * Get value for checkbox column.
