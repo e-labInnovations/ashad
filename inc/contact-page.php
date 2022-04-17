@@ -165,7 +165,7 @@ add_action( 'template_include', function( $template ) {
         return $template;
     }
  
-    return get_template_directory() . '../templates/message-send.php';
+    return get_template_directory() . '/templates/message-send.php';
 } );
 
 //Read column 5% width
