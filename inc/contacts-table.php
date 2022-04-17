@@ -13,12 +13,13 @@ class contacts_List_Table extends WP_List_Table {
      */
     public function get_columns() {
         return array(
-            'cb'		=> '<input type="checkbox" />', // to display the checkbox.			 
+            'cb'        => '<input type="checkbox" />', // to display the checkbox.
+            'read'      => 'Read',
 		    'name'      => 'Name',
-            'email'   => 'Email',
+            'email'     => 'Email',
             'subject'   => 'Subject',
             'message'   => 'Message',
-            'date'   => 'Date',
+            'date'      => 'Date',
         );
     }
     public function no_items() {
@@ -30,15 +31,29 @@ class contacts_List_Table extends WP_List_Table {
         $table_name = $wpdb->prefix . 'ashad_contacts';		
         $orderby = ( isset( $_GET['orderby'] ) ) ? esc_sql( $_GET['orderby'] ) : 'time';
         $order = ( isset( $_GET['order'] ) ) ? esc_sql( $_GET['order'] ) : 'DESC';
+        $message_status = $_GET['message_status'];
+        if($message_status) {
+            if($message_status == 'all') {
+                $where_status = "status != 'trash' AND status != 'spam'";
+            } else if($message_status == 'spam') {
+                $where_status = "status = 'spam'";
+            } else if($message_status == 'trash') {
+                $where_status = "status = 'trash'";
+            }
+        } else {
+            $where_status = "status != 'trash' AND status != 'spam'";
+        }
 
-        $user_query = "SELECT 
+        $message_query = "SELECT 
                             *
                         FROM 
                             $table_name 
+                        WHERE
+                            $where_status
                         ORDER BY $orderby $order";
 
         // query output_type will be an associative array with ARRAY_A.
-        $query_results = $wpdb->get_results( $user_query, ARRAY_A  );
+        $query_results = $wpdb->get_results( $message_query, ARRAY_A  );
         
         // return result array to prepare_items.
         return $query_results;	
@@ -108,14 +123,16 @@ class contacts_List_Table extends WP_List_Table {
         switch ( $column_name ) {
             case 'name':
                 return esc_html( $item['name'] );
+                case 'read':
+                    return $item['status'] == 1? '<span class="dashicons dashicons-visibility"></span>': '<span class="dashicons dashicons-saved"></span>';
             case 'email':
-                return esc_html( $item['email'] );
+                return sprintf('<a href="mailto:%s">%s</a>', esc_html($item['email']), esc_html($item['email']));
             case 'subject':
                 return esc_html( $item['subject'] );
             case 'message':
-                return esc_html( wp_trim_words($item['message'], 10) );
+                return sprintf('<a href="?page=%s&action=view&message_id=%s">%s</a>', $_GET['page'], $item['id'], esc_html( wp_trim_words($item['message'], 10) ));
             case 'date':
-                return esc_html( $item['time'] );
+                return esc_html(date('m-d-Y h:i A', strtotime($item['time'])));
             return 'Unknown';
         }
     }
@@ -144,6 +161,15 @@ class contacts_List_Table extends WP_List_Table {
         return $filtered_table_data;
     }
 
+    protected function get_views() { 
+        $status_links = array(
+            "all"       => ($_GET['message_status'] == 'all' || !$_GET['message_status'])?'All':"<a href='?page=".$_GET['page']."&message_status=all'>All</a>",
+            "spam" => $_GET['message_status'] == 'spam'?'Spam':"<a href='?page=".$_GET['page']."&message_status=spam'>Spam</a>",
+            "trash"   => $_GET['message_status'] == 'trash'?'Trash':"<a href='?page=".$_GET['page']."&message_status=trash'>Trash</a>"
+        );
+        return $status_links;
+    }
+
     /**
      * [OPTIONAL] this is example, how to render column with actions,
      * when you hover row "Edit | Delete" links showed
@@ -152,82 +178,33 @@ class contacts_List_Table extends WP_List_Table {
      * @return HTML
      */
 
-    function first_column_name($item) {
-        $actions = array(
-            'edit'      => sprintf('<a href="?page=custom_detail_page&user=%s">Edit</a>',$item['id']),
-            'trash'    => sprintf('<a href="?page=custom_list_page&action=trash&user=%s">Trash</a>',$item['id']),
-            );
-        return sprintf('%1$s %2$s', $item['name'], $this->row_actions($actions) );
-    
-    }
+    function column_name($item) {
+        // create a nonce
+        $action_nonce = wp_create_nonce( 'action_nonce' );
+        $title = sprintf('<a href="?page=%s&action=view&message_id=%s"><strong>%s</strong></a>', $_GET['page'], $item['id'], $item['name']);
 
-    // Returns an associative array containing the bulk action.
-    public function get_bulk_actions() {
-        /*
-        * on hitting apply in bulk actions the url paramas are set as
-        * ?action=bulk-download&paged=1&action2=-1
-        * 
-        * action and action2 are set based on the triggers above and below the table		 		    
-        */
         $actions = array(
-            'download' => 'Download messages',
-            'trash' => 'Move to Trash' 
+            'restore'   => sprintf('<a href="?page=%s&action=restore&message_id=%s&message_status=%s&_wpnonce=%s">Restore</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
+            'trash'     => sprintf('<a href="?page=%s&action=trash&message_id=%s&message_status=%s&_wpnonce=%s">Trash</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
+            'spam'      => sprintf('<a href="?page=%s&action=spam&message_id=%s&message_status=%s&_wpnonce=%s">Spam</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
         );
-        return $actions;
-    }
 
-    public function process_bulk_action() {  
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'ashad_contacts';
-
-        $nonce = wp_unslash( $_REQUEST['_wpnonce'] );
-        if ( ! wp_verify_nonce( $nonce, 'bulk-messages' ) ) { // verify the nonce.
-            $this->invalid_nonce_redirect();
-        }
-        else {
-            if ('trash' === $this->current_action()) {
-                if (isset($_GET['messages'])) {
-                    if (is_array($_GET['messages'])){
-                        foreach ($_GET['messages'] as $id) {
-                            if(!empty($id)) {
-                                $wpdb->query("update $table_name set status='trash' WHERE id IN($id)");
-                            }
-                        }
-                    } else {
-                        if (!empty($_GET['messages'])) {  
-                            $id=$_GET['messages'];
-                            $wpdb->query("update $table_name set status='trash' WHERE id =$id");  
-                        }
-                    }
-                }
+        $message_status = $_GET['message_status'];
+        if($message_status) {
+            if($message_status == 'all') {
+                unset($actions["restore"]);
+            } else if($message_status == 'spam') {
+                unset($actions["spam"]);
+            } else if($message_status == 'trash') {
+                unset($actions["trash"]);
             }
-            
-            $this->graceful_exit();
+        } else {
+            unset($actions["restore"]);
         }
-    }
 
-    // public function handle_table_actions() {	
-    //     /*
-    //      * Note: Table bulk_actions can be identified by checking $_REQUEST['action'] and $_REQUEST['action2']
-    //      * action - is set if checkbox from top-most select-all is set, otherwise returns -1
-    //      * action2 - is set if checkbox the bottom-most select-all checkbox is set, otherwise returns -1
-    //      */    
-    //     if ( ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'bulk-download' ) || ( isset( $_REQUEST['action2'] ) && $_REQUEST['action2'] === 'bulk-download' ) ) {
+        return sprintf('%1$s %2$s', $title, $this->row_actions($actions) );
     
-    //         $nonce = wp_unslash( $_REQUEST['_wpnonce'] );	
-    //         /*
-    //          * Note: the nonce field is set by the parent class
-    //          * wp_nonce_field( 'bulk-' . $this->_args['plural'] );	 
-    //          */
-    //         if ( ! wp_verify_nonce( $nonce, 'bulk-messages' ) ) { // verify the nonce.
-    //             $this->invalid_nonce_redirect();
-    //         }
-    //         else {
-    //             include_once( 'messages-bulk-download.php' );
-    //             $this->graceful_exit();
-    //         }
-    //     }
-    // }
+    }
 
     /**
      * Get value for checkbox column.
@@ -236,9 +213,81 @@ class contacts_List_Table extends WP_List_Table {
      * @return string Text to be placed inside the column <td>.
      */
     protected function column_cb( $item ) {
-        return sprintf(		
-        '<label class="screen-reader-text" for="message_' . $item['id'] . '">' . sprintf( __( 'Select %s' ), $item['name'] ) . '</label>'
-        . "<input type='checkbox' name='messages[]' id='message_{$item['id']}' value='{$item['id']}' />"					
+        return sprintf('<input type="checkbox" name="message_ids[]" value="%s" />', $item['id']);
+    }
+
+    /**
+    * Returns an associative array containing the bulk action
+    *
+    * @return array
+    */
+    public function get_bulk_actions() {
+        $actions = array(
+            'restore'   => 'Restore',
+            'spam'      => 'Mark as spam',
+            'trash'     => 'Move to Trash'
         );
+
+        $message_status = $_GET['message_status'];
+        if($message_status) {
+            if($message_status == 'all') {
+                unset($actions["restore"]);
+            } else if($message_status == 'spam') {
+                unset($actions["spam"]);
+            } else if($message_status == 'trash') {
+                unset($actions["trash"]);
+            }
+        } else {
+            unset($actions["restore"]);
+        }
+
+        return $actions;
+    }
+
+    public function handle_table_actions() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'ashad_contacts';
+        $action = isset($_GET['action'])? trim($_GET['action']) : "";
+        $message_id = isset($_GET['message_id'])? intval($_GET['message_id']) : "";
+        $nonce = esc_attr( $_REQUEST['_wpnonce'] );
+
+        // If the single action is triggered
+        if(($action === 'trash' || $action === 'spam' || $action === 'restore') && $message_id) {
+            if ( ! wp_verify_nonce( $nonce, 'action_nonce' ) ) {
+                die( 'Go get a life script kiddies' );
+            } else {
+                if ($action === 'trash') {
+                    $wpdb->query("update $table_name set status='trash' WHERE id = $message_id");
+                } else if ($action === 'spam') {
+                    $wpdb->query("update $table_name set status='spam' WHERE id = $message_id");
+                } else if ($action === 'restore') {
+                    $wpdb->query("update $table_name set status='read' WHERE id = $message_id");
+                }
+            }
+        }
+
+        // If the bulk action is triggered
+        if ( ( isset( $_GET['action'] ) && $_GET['action'] == 'trash' )
+            && ( isset( $_GET['action2'] ) && $_GET['action2'] == 'trash' )) {
+            $message_ids = esc_sql( $_GET['message_ids'] );
+
+            foreach ( $message_ids as $id ) {
+                $wpdb->query("update $table_name set status='trash' WHERE id = $id");
+            }
+        } else if ( ( isset( $_GET['action'] ) && $_GET['action'] == 'spam' )
+            && ( isset( $_GET['action2'] ) && $_GET['action2'] == 'spam' )) {
+            $message_ids = esc_sql( $_GET['message_ids'] );
+
+            foreach ( $message_ids as $id ) {
+                $wpdb->query("update $table_name set status='spam' WHERE id = $id");
+            }
+        } else if ( ( isset( $_GET['action'] ) && $_GET['action'] == 'restore' )
+            && ( isset( $_GET['action2'] ) && $_GET['action2'] == 'restore' )) {
+            $message_ids = esc_sql( $_GET['message_ids'] );
+
+            foreach ( $message_ids as $id ) {
+                $wpdb->query("update $table_name set status='read' WHERE id = $id");
+            }
+        }
     }
 }

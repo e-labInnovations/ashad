@@ -91,35 +91,62 @@ function ashad_create_contact_db() {
 //Add Admin Menu
 add_action('admin_menu', 'ashadContactsMenu');
 function ashadContactsMenu() {
-    add_menu_page( 'Contacts', 'Contacts', 'manage_options', 'ashad-contacts', 'contactsHTML', 'dashicons-email', 100 );
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'ashad_contacts';
+    $message_query = "SELECT * FROM $table_name WHERE status = 1";
+    $query_results = $wpdb->get_results( $message_query, ARRAY_A  );
+    $notification_count = count($query_results);
+
+    add_menu_page(
+        'Contact Messages',
+        $notification_count ? sprintf( 'Messages <span class="awaiting-mod">%d</span>', $notification_count ) : 'Messages',
+        'manage_options',
+        'ashad-contact-messages',
+        'contactsHTML',
+        'dashicons-email',
+        100
+    );
 }
 
 function contactsHTML() {
-    ob_start();
-    include_once get_stylesheet_directory() . '/inc/contacts-table.php';
-    $template = ob_get_contents();
-    ob_end_clean();
-    echo $template;
-    
-    $table = new contacts_List_Table();
-    $table->items = $contacts;
-    $table->prepare_items();
-    ?>
-    <div class="wrap">    
-        <h2>Messages</h2>
+    $action = isset($_GET['action'])? trim($_GET['action']) : "";
+    $message_id = isset($_GET['message_id'])? intval($_GET['message_id']) : "";
+
+    if($action == 'view' && $message_id) {
+
+        ob_start();
+        include_once get_stylesheet_directory() . '/inc/message-view.php';
+        $template = ob_get_contents();
+        ob_end_clean();
+        echo $template;
+    } else {
+        ob_start();
+        include_once get_stylesheet_directory() . '/inc/contacts-table.php';
+        $template = ob_get_contents();
+        ob_end_clean();
+        echo $template;
+        
+        $message_table = new contacts_List_Table();
+        $message_table->items = $contacts;
+        $message_table->prepare_items();
+        ?>
+        <div class="wrap">    
+            <h2>Messages</h2>
             <div id="nds-wp-list-table-demo">			
-                <div id="nds-post-body">		
+                <div id="nds-post-body">
+                    <?php $message_table->views(); ?>	
                     <form id="nds-user-list-form" method="get">
                         <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
                         <?php 
-                            $table->search_box('Find', 'nds-user-find');
-                            $table->display(); 
+                            $message_table->search_box('Find', 'nds-user-find');
+                            $message_table->display(); 
                         ?>					
                     </form>
                 </div>			
             </div>
-    </div>
-    <?php
+        </div>
+        <?php
+    }
 }
 
 
@@ -140,6 +167,23 @@ add_action( 'template_include', function( $template ) {
  
     return get_template_directory() . '../templates/message-send.php';
 } );
+
+//Read column 5% width
+function ashad_contact_messages_admin_header() {
+    $page = ( isset($_GET['page'] ) ) ? esc_attr( $_GET['page'] ) : false;
+    if( 'ashad-contact-messages' != $page )
+    return; 
+    
+    echo '<style type="text/css">';
+    echo '.wp-list-table .column-read { width: 5%; }';
+    echo '</style>';
+}
+add_action( 'admin_head', 'ashad_contact_messages_admin_header' );
+
+
+
+
+
 
 
 //Test
