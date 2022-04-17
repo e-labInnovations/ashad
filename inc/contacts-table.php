@@ -181,7 +181,12 @@ class contacts_List_Table extends WP_List_Table {
     function column_name($item) {
         // create a nonce
         $action_nonce = wp_create_nonce( 'action_nonce' );
-        $title = sprintf('<a href="?page=%s&action=view&message_id=%s"><strong>%s</strong></a>', $_GET['page'], $item['id'], $item['name']);
+        $avatar = get_avatar_url($item['email'], ['size' => '32']);
+        if($avatar == 'http://0.gravatar.com/avatar/92b35c463af18efdda2fa2db1161a47c?s=32&d=mm&r=g') {
+            $email_md5 = md5($item['email']);
+            $avatar = "https://www.gravatar.com/avatar/" . $email_md5 . ".jpg?s=32";
+        }
+        $title = sprintf('<img src="%s" class="avatar avatar-32 photo" height="32" width="32" loading="lazy" /><strong><a href="?page=%s&action=view&message_id=%s">%s</a></strong>', $avatar, $_GET['page'], $item['id'], $item['name']);
 
         $actions = array(
             'restore'   => sprintf('<a href="?page=%s&action=restore&message_id=%s&message_status=%s&_wpnonce=%s">Restore</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
