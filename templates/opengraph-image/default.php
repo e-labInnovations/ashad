@@ -44,7 +44,7 @@
                 $titleL2 = $titleArray[1];
             }
         } else {
-            $titleL2 = flase;
+            $titleL2 = false;
         }
     } else {
         $titleL1 = $title;

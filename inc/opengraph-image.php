@@ -20,7 +20,7 @@ add_action( 'template_include', function( $template ) {
     /*
     post
     page
-    attachment
+    ✔ attachment
     revision
     nav_menu_item
     custom_css

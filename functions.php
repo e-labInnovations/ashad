@@ -24,6 +24,7 @@ function ashad_theme_support() {
     add_image_size( 'hero-thumb', 760, 400, true );
     add_image_size( 'archive-thumb', 380, 200, true );
     add_image_size( 'language-thumb', 200, 200, true );
+    add_image_size( 's512', 512, 512, true );
 }
 
 add_action('after_setup_theme', 'ashad_theme_support');
