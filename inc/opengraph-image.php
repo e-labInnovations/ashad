@@ -33,13 +33,17 @@ add_action( 'template_include', function( $template ) {
     wp_global_styles
     wp_navigation
     wpcf7_contact_form
-    code_snippets
+    ✔ code_snippets
     */
     // return get_template_directory() . '../templates/opengraph-image/test.php';
 
     switch ($post_type) {
         case 'code_snippets':
             return get_template_directory() . '/templates/opengraph-image/code_snippet.php';
+            break;
+        
+        case 'attachment':
+            return get_template_directory() . '/templates/opengraph-image/attachment.php';
             break;
         
         default:
