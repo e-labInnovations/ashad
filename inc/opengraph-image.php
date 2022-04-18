@@ -18,7 +18,7 @@ add_action( 'template_include', function( $template ) {
     $post_type = get_post_type_object(get_post_type($post_id))->name;
 
     /*
-    post
+    ✔ post
     page
     ✔ attachment
     revision
@@ -35,7 +35,7 @@ add_action( 'template_include', function( $template ) {
     wpcf7_contact_form
     ✔ code_snippets
     */
-    // return get_template_directory() . '../templates/opengraph-image/test.php';
+    // return get_template_directory() . '/templates/opengraph-image/test.php';
 
     switch ($post_type) {
         case 'code_snippets':
@@ -50,7 +50,6 @@ add_action( 'template_include', function( $template ) {
             return get_template_directory() . '/templates/opengraph-image/default.php';
             break;
     }
-    // return get_template_directory() . '../templates/ashad-thumbnail.php';
 } );
 
 ?>
