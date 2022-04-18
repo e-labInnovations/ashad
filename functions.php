@@ -158,6 +158,13 @@ if (!function_exists('get_reading_time')) :
     }
 endif;
 
+//Allow upload bin mime type
+add_filter( 'upload_mimes', 'ashad_allow_upload_bin_mime_type', 1, 1 );
+function ashad_allow_upload_bin_mime_type( $mime_types ) {
+    $mime_types['bin'] = 'application/octet-stream';
+    return $mime_types;
+}
+
 //Dynamic SVG Image
 add_action( 'init',  function() {
     add_rewrite_rule( 'customsvg/([a-z0-9-]+)[/]?$', 'index.php?customsvg=$matches[1]', 'top' );
