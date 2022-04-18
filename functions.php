@@ -1,7 +1,7 @@
 <?php
 
 $version = wp_get_theme()->get('Version');
-// $version = rand(111,9999); //For development (Reload css)
+$version = rand(111,9999); //For development (Reload css)
 
 //Theme support
 function ashad_theme_support() {

@@ -27,7 +27,7 @@
 
     //creating icon image objects
     $icon_calendar = imagecreatefrompng(get_stylesheet_directory() . '/assets/img/icon_calendar.png');
-    $icon_comments = imagecreatefrompng(get_stylesheet_directory() . '/assets/img/icon_comments.png');
+    $icon_comments = imagecreatefrompng(get_stylesheet_directory() . '/assets/img/icon_comment.png');
 
     //creating site icon(favicon) image object
     $site_icon = imagecreatefrompng(get_site_icon_url(200));
@@ -66,7 +66,7 @@
     imagecopyresized($img, $site_icon, 922, 80, 0, 0, 200, 200, 200, 200);
 
     //showing date icon and date
-    imagecopyresized($img, $icon_calendar, 80, 450, 0, 0, 32, 32, 16, 16);
+    imagecopy($img, $icon_calendar, 80, 450, 0, 0, 32, 32);
     imagettftext($img, 26, 0, 130, 478, $color_primary, $fontRegular, get_the_date('F j, Y', $post_id));
     
     //showing a circle and post type label
@@ -74,7 +74,7 @@
     imagettftext($img, 26, 0, 580, 478, $color_primary, $fontRegular, get_post_type_object(get_post_type($post_id))->labels->singular_name);
 
     //showing comments icon and count
-    imagecopyresized($img, $icon_comments, 900, 450, 0, 0, 32, 32, 16, 16);
+    imagecopy($img, $icon_comments, 900, 450, 0, 0, 32, 32);
     imagettftext($img, 26, 0, 950, 478, $color_primary, $fontRegular, get_comments_number($post_id));
 
     imagepng($img);
