@@ -1,11 +1,13 @@
-<?php if(get_theme_mod('ashad_display_author_details', 1)) { ?>
+<?php if(get_theme_mod('ashad_display_author_details', 1)) { 
+    $author_id = get_the_author_meta( 'ID' );
+    ?>
 
     <section class="author">
         <div class="details">
-            <img class="img-rounded" src="<?php echo get_avatar_url( get_the_author_meta( 'ID' ), ['size' => '180'] ); ?>" alt="<?php echo get_the_author_meta('display_name'); ?>">
+            <img class="img-rounded" src="<?php echo get_avatar_url( $author_id, ['size' => '180'] ); ?>" alt="<?php echo get_the_author_meta('display_name'); ?>">
             <p class="def">Author</p>
             <h3 class="name">
-            <a href="#"> <?php echo get_the_author_meta('display_name'); ?> </a>
+            <a href="<?php echo get_the_author_meta('user_url')?get_the_author_meta('user_url'):'/user/'.get_the_author_meta('user_login') ?>"> <?php echo get_the_author_meta('display_name'); ?> </a>
             </h3>
             <p class="desc"><?php echo get_the_author_meta('description'); ?></p>
             <p>
@@ -48,9 +50,9 @@
         "@context": "http://schema.org",
         "@type": "Person",
         "name": "<?php echo get_the_author_meta('display_name'); ?>",
-        "image": "<?php echo get_avatar_url( get_the_author_meta( 'ID' ), 32 ); ?>",
+        "image": "<?php echo get_avatar_url( $author_id, 32 ); ?>",
         "jobTitle": "",
-        "url": "<?php echo get_avatar_url( get_the_author_meta( 'ID' ), 32 ); ?>",
+        "url": "<?php echo get_avatar_url( $author_id, 32 ); ?>",
         "sameAs": [
             <?php echo get_the_author_meta('github_username') != ''? '"https://github.com/' . get_the_author_meta('github_username') . '",' :'' ?>
             <?php echo get_the_author_meta('facebook_username') != ''? '"https://www.facebook.com/' . get_the_author_meta('facebook_username') . '",' :'' ?>
