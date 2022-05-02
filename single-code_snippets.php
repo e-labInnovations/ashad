@@ -53,7 +53,8 @@ if ($code_languages) {
                             <h3><?php the_title(); ?></h3>
                         </a>
                     </li>
-                <?php endwhile; ?>
+                <?php endwhile;
+                    wp_reset_postdata(); ?>
             </ul>
 
             <?php dynamic_sidebar('sidebar-1') ?>

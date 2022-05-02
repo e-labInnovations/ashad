@@ -13,7 +13,7 @@ function code_snippets_post_type() {
         'hierarchical' => false, //if true, same as pages, else same as posts 
         'public' => true,
         'has_archive' => true,
-        'support' => array('title', 'editor', 'comments'),
+        'supports' => array('title', 'editor', 'comments'),
         'menu_icon' => 'dashicons-editor-code',
         'show_in_rest' => true,
         // 'rewrite' => array( 'slug' => 'code_snippets/%code_languages%', 'with_front' => false ),
@@ -32,7 +32,7 @@ function language_taxonomy() {
         'hierarchical' => true, //if true, same as category, else same as tags 
         'public' => true,
         'has_archive' => true,
-        'support' => array('title', 'editor'),
+        'supports' => array('title', 'editor'),
         'menu_icon' => 'dashicons-editor-code',
         'show_in_rest' => true,
         'default_term' => array(
