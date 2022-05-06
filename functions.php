@@ -166,6 +166,13 @@ function ashad_allow_upload_bin_mime_type( $mime_types ) {
     return $mime_types;
 }
 
+//Allow upload ino mime type
+add_filter( 'upload_mimes', 'ashad_allow_upload_ino_mime_type', 1, 1 );
+function ashad_allow_upload_ino_mime_type( $mime_types ) {
+    $mime_types['ino'] = 'text/x-arduino';
+    return $mime_types;
+}
+
 //Dynamic SVG Image
 add_action( 'init',  function() {
     add_rewrite_rule( 'customsvg/([a-z0-9-]+)[/]?$', 'index.php?customsvg=$matches[1]', 'top' );
