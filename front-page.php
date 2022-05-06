@@ -50,7 +50,7 @@
         <section id="grid" class="row flex-grid">
             <?php
                 $homepagePosts = new WP_Query(array(
-                    'post_per_page' => 4
+                    'posts_per_page' => 4
                 ));
 
                 while ($homepagePosts->have_posts()) {
@@ -76,7 +76,7 @@
                 <?php
                     $homepageCodeSnippets = new WP_Query(array(
                         'post_type' => 'code_snippets',
-                        'post_per_page' => 8
+                        'posts_per_page' => 8
                     ));
 
                     while ($homepageCodeSnippets->have_posts()) {
