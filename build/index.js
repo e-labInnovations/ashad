@@ -1284,11 +1284,21 @@ class zmain {
       updateURL: false // Boolean. Whether or not to update the URL with the anchor hash on scroll
 
     });
-    gsap__WEBPACK_IMPORTED_MODULE_4__.gsap.from('.hero', {
-      opacity: 0,
-      duration: 1,
-      y: -50
+    var t1 = gsap__WEBPACK_IMPORTED_MODULE_4__.gsap.timeline({
+      defaults: {
+        duration: 1
+      }
     });
+    t1.from('.hero', {
+      opacity: 0,
+      y: -50
+    }).from('.box-item', {
+      opacity: 0,
+      y: -50,
+      ease: 'Power2.easeOut',
+      stagger: 0.3
+    }, '-=0.3'); // gsap.from('.hero', { opacity: 0, duration: 1, y:-50 })
+    // gsap.from('.box-item', { opacity: 0, duration: 1, y:-50, delay: 1, ease: 'Power2.easeOut', stagger: 0.3 })
   }
 
   close_search() {
