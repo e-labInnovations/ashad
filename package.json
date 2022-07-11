@@ -15,6 +15,7 @@
         "@wordpress/scripts": "^19.2.2"
     },
     "dependencies": {
+        "gsap": "^3.10.4",
         "jquery": "^3.6.0"
     }
 }

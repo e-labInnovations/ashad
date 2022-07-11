@@ -3,6 +3,8 @@ import ouibounce from './ouibounce';
 import './scrollanimation'
 import smoothScroll from './smoothscroll';
 
+import { gsap } from "gsap";
+
 class zmain {
     constructor() {
         this.previousValue
@@ -90,6 +92,8 @@ class zmain {
             speed: 500, // Integer. How fast to complete the scroll in milliseconds
             updateURL: false // Boolean. Whether or not to update the URL with the anchor hash on scroll
         });
+
+        gsap.from('.hero', { opacity: 0, duration: 1, y:-50 })
 
     }
 

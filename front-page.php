@@ -104,7 +104,8 @@
             <div class="post">
                 
                 <article class="home-content fullwidth">
-                    <?php the_content() ?>
+                    <?php the_content();
+                    // echo base64_encode(openssl_random_pseudo_bytes(64)); ?>
                 </article>
 
             </div>
