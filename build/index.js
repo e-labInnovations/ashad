@@ -1288,7 +1288,8 @@ class zmain {
       defaults: {
         duration: 1
       }
-    }); // var textSplit = SplitText.create('h1', { type: "chars,words" });
+    }); // const textWrapper = document.querySelector('.hero .title');
+    // textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
 
     t1.from('.hero', {
       opacity: 0,
@@ -1312,6 +1313,13 @@ class zmain {
       duration: 0.8,
       ease: "expo.out"
     }, "-=0.2");
+    gsap__WEBPACK_IMPORTED_MODULE_4__.gsap.fromTo(".pagination .buttons", {
+      boxShadow: "0 0 5px 0px rgba(255, 255, 255, 0.4)"
+    }, {
+      boxShadow: "0 0 5px 20px rgba(0, 0, 0, 0)",
+      repeat: -1,
+      duration: 1
+    });
   }
 
   close_search() {

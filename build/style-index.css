@@ -1512,6 +1512,7 @@ body.light:not(.main-page) .bar-header .version {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   grid-gap: 20px;
   margin: 10px;
+  padding-bottom: 30px;
 }
 .code-snippet-cards .code-snippet-card {
   background: rgba(0, 0, 0, 0.329);
