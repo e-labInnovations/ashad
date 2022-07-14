@@ -94,12 +94,28 @@ class zmain {
         });
 
         var t1 = gsap.timeline({defaults: {duration: 1}})
+        // var textSplit = SplitText.create('h1', { type: "chars,words" });
 
         t1.from('.hero', { opacity: 0, y:-50 })
-            .from('.box-item', { opacity: 0, y:-50, ease: 'Power2.easeOut', stagger: 0.3 }, '-=0.3')
-        
-        // gsap.from('.hero', { opacity: 0, duration: 1, y:-50 })
-        // gsap.from('.box-item', { opacity: 0, duration: 1, y:-50, delay: 1, ease: 'Power2.easeOut', stagger: 0.3 })
+            .from('.box-item', { opacity: 0, y:-50, ease: 'Power2.easeOut', stagger: 0.3 }, '-=0.3');
+
+        const postTitle = gsap.timeline({ yoyo: true });
+            
+        postTitle.from(".post-title", {
+            duration: 1,
+            scaleX: 0,
+            transformOrigin: "left",
+            ease: "expo.inOut"
+        })
+            .from(
+                ".post-title",
+                {
+                y: "100%",
+                duration: 0.8,
+                ease: "expo.out"
+                },
+                "-=0.2"
+            );
 
     }
 
