@@ -1,8 +1,5 @@
 <?php
 
-$version = wp_get_theme()->get('Version');
-// $version = rand(111,9999); //For development (Reload css)
-
 //Theme support
 function ashad_theme_support() {
     //Add dynamic title tag support
@@ -44,6 +41,9 @@ add_action('init', 'ashad_menus');
 
 //Stylesheets
 function ashad_register_styles(){
+    $version = wp_get_theme()->get('Version');
+    // $version = rand(111,9999); //For development (Reload css)
+
     // wp_enqueue_style('ashad-style', get_template_directory_uri() . "/style.css", array(), $version, 'all');
     wp_enqueue_style('ashad-style', get_template_directory_uri() . "/build/style-index.css", array(), $version, 'all');
     wp_enqueue_style('ashad-style2', get_template_directory_uri(array('ashad-style')) . "/assets/css/style2.css", array(), $version/*rand(111,9999)*/, 'all');
@@ -54,6 +54,7 @@ add_action('wp_enqueue_scripts', 'ashad_register_styles');
 
 //JavaScripts
 function ashad_register_scripts(){
+    $version = wp_get_theme()->get('Version');
     $params = array(
         'root_url' => get_site_url(),
         'assets_url' => get_template_directory_uri() . '/assets',
