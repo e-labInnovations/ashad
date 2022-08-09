@@ -93,7 +93,7 @@ require_once get_stylesheet_directory() . '/inc/opengraph-image.php';
 require_once get_stylesheet_directory() . '/inc/contact-page.php';
 
 //Custom Email
-// require_once get_stylesheet_directory() . '/inc/mail-templates.php';
+require_once get_stylesheet_directory() . '/inc/mail-templates.php';
 
 //Redirect subscriber account from admin panel to website home
 function ashadRedirectSubscriber() {
