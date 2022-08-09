@@ -9,7 +9,7 @@ function ashad_wp_new_user_notification_email( $wp_new_user_notification_email, 
     $user_last_name = stripslashes( $user->user_last_name );
     $user_pass = stripslashes( $user->user_pass );
     ob_start();
-    include( locate_template( '../templates/mail/new-user-notification-email.php' )); // This path may vary depending on your setup.
+    include(get_stylesheet_directory() .  '/templates/mail/new-user-notification-email.php');
     $wp_new_user_notification_email['message'] = ob_get_clean();
     $wp_new_user_notification_email['subject'] = sprintf( '[%s] Welcome.', $blogname );
     $wp_new_user_notification_email['headers'] = array('Content-Type: text/html; charset=UTF-8');
