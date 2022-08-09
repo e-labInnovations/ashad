@@ -92,6 +92,9 @@ require_once get_stylesheet_directory() . '/inc/opengraph-image.php';
 //Custom Contact Page
 require_once get_stylesheet_directory() . '/inc/contact-page.php';
 
+//Custom Email
+require_once get_stylesheet_directory() . '/inc/mail-templates.php';
+
 //Redirect subscriber account from admin panel to website home
 function ashadRedirectSubscriber() {
     $currentUser = wp_get_current_user();
