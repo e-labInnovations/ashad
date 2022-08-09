@@ -152,7 +152,7 @@
 													<table class="heading_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="padding-bottom:5px;padding-top:25px;text-align:center;width:100%;">
-																<h1 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 36px; font-weight: 400; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><strong>Welcome to <?php echo esc_html( $user_firstname ) . ' ' . esc_html( $user_lastname ); ?></strong></h1>
+																<h1 style="margin: 0; color: #555555; direction: ltr; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 36px; font-weight: 400; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><strong>Welcome to <?php echo $blogname; ?></strong></h1>
 															</td>
 														</tr>
 													</table>
@@ -161,7 +161,7 @@
 															<td class="pad" style="padding-bottom:20px;padding-left:30px;padding-right:30px;padding-top:20px;">
 																<div style="font-family: sans-serif">
 																	<div class="txtTinyMce-wrapper" style="font-size: 14px; mso-line-height-alt: 25.2px; color: #737487; line-height: 1.8; font-family: Arial, Helvetica Neue, Helvetica, sans-serif;">
-																		<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;">You have successfully confirmed your subscription. You now have access to {site_name}. You can now sign into your account to start reading.</span></p>
+																		<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 32.4px;"><span style="font-size:18px;">We have successfully confirmed your subscription. You now have access to <?php echo $blogname; ?>. You can now sign into your account to start reading.</span></p>
 																	</div>
 																</div>
 															</td>
@@ -171,7 +171,7 @@
 														<tr>
 															<td class="pad" style="padding-bottom:30px;padding-left:15px;padding-right:15px;padding-top:20px;text-align:center;">
 																<div class="alignment" align="center">
-																	<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{login_url}" style="height:52px;width:233px;v-text-anchor:middle;" arcsize="8%" stroke="false" fillcolor="#ff7d14"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px"><![endif]--><a href="{login_url}" target="_blank" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#ff7d14;border-radius:4px;width:auto;border-top:1px solid #ff7d14;font-weight:400;border-right:1px solid #ff7d14;border-bottom:1px solid #ff7d14;border-left:1px solid #ff7d14;padding-top:10px;padding-bottom:10px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:60px;padding-right:60px;font-size:16px;display:inline-block;letter-spacing:normal;"><span dir="ltr" style="word-break: break-word; line-height: 32px;">Login to our site</span></span></a>
+																	<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="<?php echo wp_login_url(); ?>" style="height:52px;width:233px;v-text-anchor:middle;" arcsize="8%" stroke="false" fillcolor="#ff7d14"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:16px"><![endif]--><a href="<?php echo wp_login_url(); ?>" target="_blank" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#ff7d14;border-radius:4px;width:auto;border-top:1px solid #ff7d14;font-weight:400;border-right:1px solid #ff7d14;border-bottom:1px solid #ff7d14;border-left:1px solid #ff7d14;padding-top:10px;padding-bottom:10px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;"><span style="padding-left:60px;padding-right:60px;font-size:16px;display:inline-block;letter-spacing:normal;"><span dir="ltr" style="word-break: break-word; line-height: 32px;">Login to our site</span></span></a>
 																	<!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
 																</div>
 															</td>
@@ -254,7 +254,7 @@
 															<td class="pad" style="padding-bottom:5px;padding-left:5px;padding-right:5px;padding-top:30px;">
 																<div style="font-family: sans-serif">
 																	<div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #262b30; line-height: 1.2;">
-																		<p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:12px;">© 2020 {site_name} | 123 Main St. City, State, Country 12345</span></p>
+																		<p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:12px;">© <?php echo date("Y"); ?> <?php echo $blogname; ?></span></p>
 																	</div>
 																</div>
 															</td>
@@ -265,7 +265,7 @@
 															<td class="pad" style="padding-bottom:35px;padding-left:10px;padding-right:10px;padding-top:5px;">
 																<div style="font-family: sans-serif">
 																	<div class="txtTinyMce-wrapper" style="font-size: 12px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 14.399999999999999px; color: #262b30; line-height: 1.2;">
-																		<p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:12px;">If you prefer not to receive marketing emails form this list, <a style="text-decoration: underline; color: #262b30;" href="http://www.example.com" target="_blank" rel="noopener">click here to unsubscribe</a>.</span></p>
+																		<p style="margin: 0; font-size: 14px; text-align: center;"><span style="font-size:12px;">If you prefer not to receive marketing emails form this list, <a style="text-decoration: underline; color: #262b30;" href="<?php echo get_site_url(); ?>" target="_blank" rel="noopener">click here to unsubscribe</a>.</span></p>
 																	</div>
 																</div>
 															</td>
