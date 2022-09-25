@@ -3,7 +3,19 @@
 Template Name: Contact Us
 */
 
-get_header(); ?>
+get_header();?>
+
+<script>
+  function onLoadCallback() {
+    grecaptcha.render('divRecaptcha', {
+      sitekey: '6Lc9ZisiAAAAAJlfxIisolKa8TiWVRfFONXlopMq',
+      callback: token => {
+        document.getElementById('recaptchaToken').value = token
+      }
+    })
+  }
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onLoadCallback&render=explicit" async defer></script>
 
 <style type="text/css" media="screen">
   .container {
@@ -20,27 +32,30 @@ get_header(); ?>
                 <h2>Talk to me</h2>
                 <div id="form" class="contact-form">
                     <form accept-charset="UTF-8" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="POST" v-on:submit.prevent="validateBeforeSubmit" ref="contact">
-                    <fieldset>
-                        <input type="text" name="name" placeholder="Your name" v-validate="'required'"
-                            :class="{ 'has-error': errors.has('name') }">
-                        <span v-if="errors.has('name')" v-cloak>${ errors.first('name') }</span>
+                      <fieldset>
+                          <input type="text" name="name" placeholder="Your name" v-validate="'required'"
+                              :class="{ 'has-error': errors.has('name') }">
+                          <span v-if="errors.has('name')" v-cloak>${ errors.first('name') }</span>
 
-                        <input type="text" name="email" placeholder="Your email" v-validate="'required|email'"
-                            :class="{ 'has-error': errors.has('email') }">
-                        <span v-if="errors.has('email')" v-cloak>${ errors.first('email') }</span>
+                          <input type="text" name="email" placeholder="Your email" v-validate="'required|email'"
+                              :class="{ 'has-error': errors.has('email') }">
+                          <span v-if="errors.has('email')" v-cloak>${ errors.first('email') }</span>
 
-                        <input type="text" name="subject" placeholder="Subject" v-validate="'required'"
-                            :class="{ 'has-error': errors.has('subject') }">
-                        <span v-if="errors.has('subject')" v-cloak>${ errors.first('subject') }</span>
+                          <input type="text" name="subject" placeholder="Subject" v-validate="'required'"
+                              :class="{ 'has-error': errors.has('subject') }">
+                          <span v-if="errors.has('subject')" v-cloak>${ errors.first('subject') }</span>
 
-                        <textarea name="message" onkeyup="adjust_textarea(this)" placeholder="Your message" v-validate="'required'"
-                                :class="{ 'has-error': errors.has('message') }"></textarea>
-                        <span v-if="errors.has('message')" v-cloak>${ errors.first('message') }</span>
-                        <input type="hidden" name="action" value="ashad_contact_form">
-                        <?php wp_nonce_field('ashad_contact_form'); ?>
+                          <textarea name="message" onkeyup="adjust_textarea(this)" placeholder="Your message" v-validate="'required'"
+                                  :class="{ 'has-error': errors.has('message') }"></textarea>
+                          <span v-if="errors.has('message')" v-cloak>${ errors.first('message') }</span>
+                          <input type="hidden" name="action" value="ashad_contact_form">
+                          <input type="hidden" id="recaptchaToken" name="recaptchaToken" value="">
+                          <?php wp_nonce_field('ashad_contact_form'); ?>
 
-                        <button type="submit">Send</button>
-                    </fieldset>
+                          <div id="divRecaptcha" class="g-recaptcha"></div>
+
+                          <button type="submit">Send</button>
+                      </fieldset>
                     </form>
                 </div>
             </div>

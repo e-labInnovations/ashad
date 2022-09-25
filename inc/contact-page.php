@@ -2,6 +2,7 @@
 
 function ashadSaveContactMessage() {
     $flag=1;
+    $error = '';
     if($_POST['name']=='') {
         $flag=0;
         $error = $error . '\n' . "Please Enter Your Name<br>";
@@ -27,6 +28,11 @@ function ashadSaveContactMessage() {
         $error = $error . '\n' . "Please Enter Message";
     }
     
+    if($_POST['recaptchaToken']=='') {
+        $flag=0;
+        $error = $error . '\n' . "Recaptcha not found";
+    }
+    
     if ( empty($_POST) ) {
         print 'Sorry, your nonce did not verify.';
         exit;
@@ -35,32 +41,39 @@ function ashadSaveContactMessage() {
         exit;
     } else {
         if($flag==1) {
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'ashad_contacts';
-
-            $name = sanitize_text_field($_POST['name']);
-            $email = sanitize_email($_POST['email']);
-            $subject = sanitize_text_field($_POST['subject']);
-            $message = sanitize_text_field($_POST['message']);
-
-            $now = new DateTime();
-            $wpdb->insert($table_name, array(
-                'time' => $now->format('Y-m-d H:i:s'),
-                'name' => $name,
-                'email' => $email,
-                'subject' => $subject,
-                'message' => $message,
-                'status' => '1'
-            ));
-            wp_mail(get_option("admin_email"),$name." sent you a message",stripslashes($message),"From: ".$name." <".$email.">rnReply-To:".$email);
-            wp_redirect('/message-send');
+            $recaptcha_response = wp_remote_post("https://www.google.com/recaptcha/api/siteverify?secret=6Lc9ZisiAAAAAHvnqMWmcKnOsM1Zpw65TNoH4xfz&response=" . $_POST['recaptchaToken']);
+            var_dump(json_decode($recaptcha_response['body'])->success);
+            if(json_decode($recaptcha_response['body'])->success) {
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'ashad_contacts';
+    
+                $name = sanitize_text_field($_POST['name']);
+                $email = sanitize_email($_POST['email']);
+                $subject = sanitize_text_field($_POST['subject']);
+                $message = sanitize_text_field($_POST['message']);
+    
+                $now = new DateTime();
+                $wpdb->insert($table_name, array(
+                    'time' => $now->format('Y-m-d H:i:s'),
+                    'name' => $name,
+                    'email' => $email,
+                    'subject' => $subject,
+                    'message' => $message,
+                    'status' => '1'
+                ));
+                wp_mail(get_option("admin_email"),$name." sent you a message",stripslashes($message),"From: ".$name." <".$email.">rnReply-To:".$email);
+                wp_redirect('/message-send');
+            } else {
+                $error = $error . '\n' . "Recaptcha not valid";  
+                print $error;
+            }
         } else {
             // wp_redirect('/message-send');
             print $error;
         }
     }
 
-    print_r($_POST);
+    // print_r($_POST);
 }
 add_action('admin_post_nopriv_ashad_contact_form', 'ashadSaveContactMessage');
 add_action('admin_post_ashad_contact_form', 'ashadSaveContactMessage');
