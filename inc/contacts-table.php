@@ -98,7 +98,7 @@ class contacts_List_Table extends WP_List_Table {
         $this->items = $table_data;	
             
         // code to handle pagination
-        $messages_per_page = 10;//$this->get_items_per_page( 'messages_per_page' );
+        $messages_per_page = 50;//$this->get_items_per_page( 'messages_per_page' );
         $table_page = $this->get_pagenum();
 
         // provide the ordered data to the List Table
