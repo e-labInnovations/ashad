@@ -3,12 +3,18 @@
 Template Name: Contact Us
 */
 
-get_header();?>
+get_header();
+
+$contact_page_data = get_option('ashad_contactpage_data',array(
+  'sitekey'   => '',
+  'secretkey' => ''
+));
+?>
 
 <script>
   function onLoadCallback() {
     grecaptcha.render('divRecaptcha', {
-      sitekey: '6Lc9ZisiAAAAAJlfxIisolKa8TiWVRfFONXlopMq',
+      sitekey: '<?php echo $contact_page_data['sitekey'] ?>',
       callback: token => {
         document.getElementById('recaptchaToken').value = token
       }

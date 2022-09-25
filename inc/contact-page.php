@@ -41,7 +41,11 @@ function ashadSaveContactMessage() {
         exit;
     } else {
         if($flag==1) {
-            $recaptcha_response = wp_remote_post("https://www.google.com/recaptcha/api/siteverify?secret=6Lc9ZisiAAAAAHvnqMWmcKnOsM1Zpw65TNoH4xfz&response=" . $_POST['recaptchaToken']);
+            $contact_page_data = get_option('ashad_contactpage_data',array(
+                'sitekey'   => '',
+                'secretkey' => ''
+            ));
+            $recaptcha_response = wp_remote_post("https://www.google.com/recaptcha/api/siteverify?secret=" . $contact_page_data['secretkey']. "&response=" . $_POST['recaptchaToken']);
             var_dump(json_decode($recaptcha_response['body'])->success);
             if(json_decode($recaptcha_response['body'])->success) {
                 global $wpdb;
@@ -118,6 +122,16 @@ function ashadContactsMenu() {
         'contactsHTML',
         'dashicons-email',
         100
+    );
+
+    require_once  __DIR__ . '/ashad-contact-messages-settings-page.php';
+    add_submenu_page(
+        "ashad-contact-messages",
+        "Settings",
+        "Settings",
+        'manage_options',
+        "ashad-contact-messages_settings",
+        "ashad_contact_messages_settings_html"
     );
 }
 
