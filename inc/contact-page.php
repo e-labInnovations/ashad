@@ -140,7 +140,7 @@ function contactsHTML() {
         echo $template;
         
         $message_table = new contacts_List_Table();
-        $message_table->items = $contacts;
+        // $message_table->items = $contacts;
         $message_table->prepare_items();
         ?>
         <div class="wrap">    

@@ -31,7 +31,7 @@ class contacts_List_Table extends WP_List_Table {
         $table_name = $wpdb->prefix . 'ashad_contacts';		
         $orderby = ( isset( $_GET['orderby'] ) ) ? esc_sql( $_GET['orderby'] ) : 'time';
         $order = ( isset( $_GET['order'] ) ) ? esc_sql( $_GET['order'] ) : 'DESC';
-        $message_status = $_GET['message_status'];
+        $message_status = isset($_GET['message_status'])?$_GET['message_status']:'all';
         if($message_status) {
             if($message_status == 'all') {
                 $where_status = "status != 'trash' AND status != 'spam'";
@@ -162,10 +162,11 @@ class contacts_List_Table extends WP_List_Table {
     }
 
     protected function get_views() { 
+        $message_status = isset($_GET['message_status'])?$_GET['message_status']:'all';
         $status_links = array(
-            "all"       => ($_GET['message_status'] == 'all' || !$_GET['message_status'])?'All':"<a href='?page=".$_GET['page']."&message_status=all'>All</a>",
-            "spam" => $_GET['message_status'] == 'spam'?'Spam':"<a href='?page=".$_GET['page']."&message_status=spam'>Spam</a>",
-            "trash"   => $_GET['message_status'] == 'trash'?'Trash':"<a href='?page=".$_GET['page']."&message_status=trash'>Trash</a>"
+            "all"       => ($message_status == 'all' || !$message_status)?'All':"<a href='?page=".$_GET['page']."&message_status=all'>All</a>",
+            "spam" => $message_status == 'spam'?'Spam':"<a href='?page=".$_GET['page']."&message_status=spam'>Spam</a>",
+            "trash"   => $message_status == 'trash'?'Trash':"<a href='?page=".$_GET['page']."&message_status=trash'>Trash</a>"
         );
         return $status_links;
     }
@@ -188,13 +189,14 @@ class contacts_List_Table extends WP_List_Table {
         }
         $title = sprintf('<img src="%s" class="avatar avatar-32 photo" height="32" width="32" loading="lazy" /><strong><a href="?page=%s&action=view&message_id=%s">%s</a></strong>', $avatar, $_GET['page'], $item['id'], $item['name']);
 
+        $item_message_status = isset($item['message_status'])?$item['message_status']:'spam';
         $actions = array(
-            'restore'   => sprintf('<a href="?page=%s&action=restore&message_id=%s&message_status=%s&_wpnonce=%s">Restore</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
-            'trash'     => sprintf('<a href="?page=%s&action=trash&message_id=%s&message_status=%s&_wpnonce=%s">Trash</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
-            'spam'      => sprintf('<a href="?page=%s&action=spam&message_id=%s&message_status=%s&_wpnonce=%s">Spam</a>', $_GET['page'], $item['id'], $item['message_status'], $action_nonce),
+            'restore'   => sprintf('<a href="?page=%s&action=restore&message_id=%s&message_status=%s&_wpnonce=%s">Restore</a>', $_GET['page'], $item['id'], $item_message_status, $action_nonce),
+            'trash'     => sprintf('<a href="?page=%s&action=trash&message_id=%s&message_status=%s&_wpnonce=%s">Trash</a>', $_GET['page'], $item['id'], $item_message_status, $action_nonce),
+            'spam'      => sprintf('<a href="?page=%s&action=spam&message_id=%s&message_status=%s&_wpnonce=%s">Spam</a>', $_GET['page'], $item['id'], $item_message_status, $action_nonce),
         );
 
-        $message_status = $_GET['message_status'];
+        $message_status = isset($_GET['message_status'])?$_GET['message_status']:'all';
         if($message_status) {
             if($message_status == 'all') {
                 unset($actions["restore"]);
@@ -233,7 +235,7 @@ class contacts_List_Table extends WP_List_Table {
             'trash'     => 'Move to Trash'
         );
 
-        $message_status = $_GET['message_status'];
+        $message_status = isset($_GET['message_status'])?$_GET['message_status']:'all';
         if($message_status) {
             if($message_status == 'all') {
                 unset($actions["restore"]);
@@ -254,7 +256,7 @@ class contacts_List_Table extends WP_List_Table {
         $table_name = $wpdb->prefix . 'ashad_contacts';
         $action = isset($_GET['action'])? trim($_GET['action']) : "";
         $message_id = isset($_GET['message_id'])? intval($_GET['message_id']) : "";
-        $nonce = esc_attr( $_REQUEST['_wpnonce'] );
+        $nonce = esc_attr(isset($_REQUEST['_wpnonce']));
 
         // If the single action is triggered
         if(($action === 'trash' || $action === 'spam' || $action === 'restore') && $message_id) {
