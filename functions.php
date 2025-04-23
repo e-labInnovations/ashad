@@ -22,6 +22,10 @@ function ashad_theme_support() {
     add_image_size( 'archive-thumb', 380, 200, true );
     add_image_size( 'language-thumb', 200, 200, true );
     add_image_size( 's512', 512, 512, true );
+	
+	@ini_set( 'upload_max_size' , '256M' );
+	@ini_set( 'post_max_size', '256M');
+	@ini_set( 'max_execution_time', '300' );
 }
 
 add_action('after_setup_theme', 'ashad_theme_support');
@@ -163,17 +167,12 @@ if (!function_exists('get_reading_time')) :
     }
 endif;
 
-//Allow upload bin mime type
-add_filter( 'upload_mimes', 'ashad_allow_upload_bin_mime_type', 1, 1 );
-function ashad_allow_upload_bin_mime_type( $mime_types ) {
-    $mime_types['bin'] = 'application/octet-stream';
-    return $mime_types;
-}
-
-//Allow upload ino mime type
-add_filter( 'upload_mimes', 'ashad_allow_upload_ino_mime_type', 1, 1 );
-function ashad_allow_upload_ino_mime_type( $mime_types ) {
-    $mime_types['ino'] = 'text/x-arduino';
+//Allow upload mime type
+add_filter( 'upload_mimes', 'ashad_allow_upload_mime_types', 1, 1 );
+function ashad_allow_upload_mime_types( $mime_types ) {
+    $mime_types['ino'] = 'text/x-arduino';//Arduino ino file
+	$mime_types['pcb'] = 'application/octet-stream';//CopperCAM pcb file
+// 	$mime_types['bin'] = 'application/octet-stream';//ESP8266 or any firmware file
     return $mime_types;
 }
 
@@ -194,6 +193,149 @@ add_action( 'template_include', function( $template ) {
  
     return get_template_directory() . '/svg.php';
 } );
+
+
+
+
+
+
+
+
+
+
+
+
+
+// UPLOAD ENABLE/DISABLE FEATURE
+// Create a settings page
+function my_upload_settings_menu() {
+    add_options_page(
+        'Upload Settings', // Page title
+        'Upload Settings', // Menu title
+        'manage_options',  // Capability
+        'upload-settings', // Menu slug
+        'my_upload_settings_page' // Callback function
+    );
+}
+add_action('admin_menu', 'my_upload_settings_menu');
+
+// Display the settings page
+function my_upload_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>Upload Settings</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('my_upload_settings_group');
+            do_settings_sections('my_upload_settings_group');
+            $upload_enabled = get_option('upload_enabled', '1'); // Default to enabled
+            ?>
+            <label for="upload_enabled">
+                <input type="checkbox" id="upload_enabled" name="upload_enabled" value="1" <?php checked($upload_enabled, '1'); ?> />
+                Enable File Uploads
+            </label>
+            <p class="description">Check this box to allow file uploads.</p>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+
+// Register the setting with sanitization
+function my_upload_settings_init() {
+    register_setting('my_upload_settings_group', 'upload_enabled', [
+        'type' => 'string',
+        'sanitize_callback' => function ($value) {
+            return $value === '1' ? '1' : '0';
+        },
+        'default' => '1',
+    ]);
+}
+add_action('admin_init', 'my_upload_settings_init');
+
+// Set upload limit to zero if disabled
+function my_limit_upload_size($file) {
+    if (get_option('upload_enabled', '1') !== '1') {
+        $file['error'] = 'File uploads are currently disabled.';
+    }
+    return $file;
+}
+add_filter('wp_handle_upload_prefilter', 'my_limit_upload_size');
+
+// Show admin notice when uploads are disabled
+function my_upload_admin_notice() {
+    if (get_option('upload_enabled', '1') !== '1') {
+        echo '<div class="notice notice-warning"><p><strong>Warning:</strong> File uploads are currently disabled in settings.</p></div>';
+    }
+}
+add_action('admin_notices', 'my_upload_admin_notice');
+
+
+/**
+ * Register GitHub Profile API endpoint
+ */
+function register_github_profile_endpoint() {
+    register_rest_route('elabins/v1', '/github-profile', array(
+        'methods' => 'GET',
+        'callback' => 'get_github_profile_data',
+        'permission_callback' => '__return_true'
+    ));
+}
+add_action('rest_api_init', 'register_github_profile_endpoint');
+
+/**
+ * Fetch GitHub profile data
+ */
+function get_github_profile_data() {
+    $username = 'e-labInnovations';
+    $api_url = "https://profile-summary-for-github.com/api/user/{$username}";
+    
+    // Set up the request arguments
+    $args = array(
+        'timeout' => 30,
+        'headers' => array(
+            'User-Agent' => 'WordPress/' . get_bloginfo('version')
+        )
+    );
+    
+    // Make the request
+    $response = wp_remote_get($api_url, $args);
+    
+    // Check for errors
+    if (is_wp_error($response)) {
+        return new WP_Error('api_error', $response->get_error_message(), array('status' => 500));
+    }
+    
+    // Get the response body
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+    
+    // Check if the data is valid
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return new WP_Error('json_error', 'Invalid JSON response', array('status' => 500));
+    }
+    
+    // Cache the response for 1 hour
+    set_transient('github_profile_data', $data, HOUR_IN_SECONDS);
+    
+    return $data;
+}
+
+/**
+ * Add CORS headers for the GitHub profile endpoint
+ */
+function add_cors_headers() {
+    header('Access-Control-Allow-Origin: ' . get_site_url());
+    header('Access-Control-Allow-Methods: GET');
+    header('Access-Control-Allow-Credentials: true');
+}
+add_action('rest_api_init', function() {
+    remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+    add_filter('rest_pre_serve_request', function($value) {
+        add_cors_headers();
+        return $value;
+    });
+}, 15);
 
 
 ?>
